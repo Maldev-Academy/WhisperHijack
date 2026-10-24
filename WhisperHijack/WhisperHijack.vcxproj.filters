@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="IndirectSyscalling">
+      <UniqueIdentifier>{781430ae-0adc-4ab6-82c1-313f743b86af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ReadThroughGadgets">
+      <UniqueIdentifier>{563a7d64-93fd-4f3c-85ec-9717441c0be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResolveAPIs">
+      <UniqueIdentifier>{acbdd22a-c1ab-4a08-8f7e-84ac15c027c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DbgMacros">
+      <UniqueIdentifier>{632505c4-ccfd-4287-9cb0-89815fd20f6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Crc32bPython">
+      <UniqueIdentifier>{e9085b2f-236e-40a0-a05e-cf75ea9cdcb1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IndirectSyscalling.c">
+      <Filter>IndirectSyscalling</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadThroughGadgets.c">
+      <Filter>ReadThroughGadgets</Filter>
+    </ClCompile>
+    <ClCompile Include="ResolveAPIs.c">
+      <Filter>ResolveAPIs</Filter>
+    </ClCompile>
+    <ClCompile Include="DbgMacros.c">
+      <Filter>DbgMacros</Filter>
+    </ClCompile>
+    <ClCompile Include="ApiStringHashing.c">
+      <Filter>ResolveAPIs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Structures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IndirectSyscalling.h">
+      <Filter>IndirectSyscalling</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadThroughGadgets.h">
+      <Filter>ReadThroughGadgets</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolveAPIs.h">
+      <Filter>ResolveAPIs</Filter>
+    </ClInclude>
+    <ClInclude Include="DbgMacros.h">
+      <Filter>DbgMacros</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="ReadGadgets.asm">
+      <Filter>ReadThroughGadgets</Filter>
+    </MASM>
+    <MASM Include="InitializeSyscalls.asm">
+      <Filter>IndirectSyscalling</Filter>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Crc32bHasher.py">
+      <Filter>Crc32bPython</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,57 @@
+WhisperHijack
+Copyright 2026 MalDev Academy (@NUL0x4C | @mrd0x)
+https://maldevacademy.com
+
+This project is developed and maintained by MalDev Academy as part of
+its Windows internals and offensive security coursework.
+
+================================================================================
+Techniques - Original Research
+================================================================================
+
+This product is an INDEPENDENT IMPLEMENTATION of techniques originally
+described by hasherezade:
+
+  - Thread Name-Calling (July 2024)
+    https://research.checkpoint.com/2024/thread-name-calling-using-thread-name-for-offense/
+
+  - Waiting Thread Hijacking (April 2025)
+    https://research.checkpoint.com/2025/waiting-thread-hijacking/
+
+All credit for the original research belongs to hasherezade and
+Check Point Research.
+
+================================================================================
+Third-Party Software
+================================================================================
+
+This product includes software from the following third-party projects:
+
+--------------------------------------------------------------------------------
+ApiHashing (MIT License)
+Copyright (c) 2026 MalDev Academy
+https://github.com/Maldev-Academy/ApiHashing
+
+Used for the hashed-import resolver and EAF bypass.
+
+--------------------------------------------------------------------------------
+ApiSet (MIT License)
+Copyright (c) 2017-2019 Aidan Khoury
+https://github.com/ajkhoury/ApiSet
+
+Portions of API Set resolution structures and traversal logic are
+incorporated transitively via ApiHashing.
+
+--------------------------------------------------------------------------------
+
+Both ApiHashing and ApiSet are distributed under the MIT License. Their
+original license text and copyright notices are preserved in the respective
+LICENSE files of those projects, as required by the MIT License.
+
+================================================================================
+Redistribution
+================================================================================
+
+Any redistribution, modification, or derivative work of this software must
+retain this notice in a readable form, as required by Section 4(d) of the
+Apache License, Version 2.0.
