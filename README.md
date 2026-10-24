@@ -3,6 +3,20 @@
 A stealthy process injection PoC combining **Thread Name-Calling** for payload delivery with **Waiting Thread Hijacking** for execution, with zero cross-process writes.
 
 
+### Quick Links
+
+[Maldev Academy Home](https://maldevacademy.com?ref=gh)
+
+[Maldev Database](https://search.maldevacademy.com?ref=gh)
+  
+[Malware Development Course Syllabus](https://maldevacademy.com/maldev-course/syllabus?ref=gh)
+
+[Offensive Phishing Operations Course Syllabus](https://maldevacademy.com/phishing-course/syllabus?ref=gh)
+
+[Ransomware Internals, Simulation and Detection Course Syllabus](https://maldevacademy.com/ransomware-course/syllabus?ref=gh)
+
+<br>
+
 ## What Does It Do
 
 Injects an x64 `cmd.exe` shellcode into a running 64-bit process and executes it on an existing waiting thread, without:
@@ -33,11 +47,11 @@ This project is an independent implementation of both techniques with modificati
 
 The injection runs across three cooperating processes to break up the behavioral signature:
 
-### 1. Grandparent (`GrandparentMain`)
+### 1. Grandparent ([`GrandparentMain`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L1288))
 
 Launches with no arguments. Spawns the Writer child via `NtCreateUserProcess` with `MITIGATION_POLICY_HARDENED` (if enabled) and exits.
 
-### 2. Writer (`WriterChildMain`)
+### 2. Writer ([`WriterChildMain`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L1307))
 
 1. Enumerates the system via `NtQuerySystemInformation(SystemProcessInformation)` and finds an alertable waiting thread (`ThreadState == Waiting && WaitReason == WrQueue`) in a non-WoW64 64-bit process.
 
@@ -45,15 +59,15 @@ Launches with no arguments. Spawns the Writer child via `NtCreateUserProcess` wi
 
 3. Composes a wrapped payload: `[WTH stub (0x45 bytes)][main shellcode][8-byte hijack pointer at tail]`.
 
-4. Allocates a granularity-sized region in the target as `PAGE_READWRITE` (via `AllocateVirtualMemory` -> `FindSuitableAddress`).
+4. Allocates a granularity-sized region in the target as `PAGE_READWRITE` (via [`AllocateVirtualMemory`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L505) -> [`FindSuitableAddress`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L429)).
 
 5. Plants the hijack pointer (= `pAllocatedAddress + WTH_STUB_CODE_OFFSET`) into the tail of the wrapped payload before delivery.
 
-6. Delivers the full wrapped payload into the target via **Thread Name-Calling** (`WriteMemoryViaThreadNameApc`).
+6. Delivers the full wrapped payload into the target via **Thread Name-Calling** ([`WriteMemoryViaThreadNameApc`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L717)).
 
 7. Spawns the Flipper child with inherited handles for the target process and thread.
 
-### 3. Flipper (`FlipperChildMain`)
+### 3. Flipper ([`FlipperChildMain`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L1405))
 
 1. Receives `hProcess`, `hThread`, `pAllocatedAddress`, and `cbSize` on its command line.
 
@@ -77,11 +91,11 @@ For example, calling `VirtualAllocEx` for 1 byte at `0x00401001` makes Windows r
 
 This project operates deliberately on granularity boundaries. The payload region is placed in one or more 64 KB blocks at a predictable address, and each block is built up page by page instead of in a single combined `MEM_RESERVE | MEM_COMMIT` call. The two subsections below cover how the base is picked and how the per-page commits are shaped.
 
-### Address selection (`FindSuitableAddress`)
+### Address selection ([`FindSuitableAddress`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L429))
 
 The target base is picked from a fixed list of candidate addresses (`0xDDDD0000`, `0x10000000`, `0x21000000`, ... `0xCCCC0000`). The first candidate whose required span of granularity-sized chunks is entirely `MEM_FREE` (probed with `NtQueryVirtualMemory(MemoryBasicInformation)`) wins. 
 
-### Allocation shape (`AllocateVirtualMemory`)
+### Allocation shape ([`AllocateVirtualMemory`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L505))
 
 For each granularity-sized region (64 KB on x64) the payload needs:
 
@@ -180,14 +194,14 @@ The sequence:
 
 - **Indirect syscalls** via `IndirectSyscalling.h` - all Nt* calls go through `INITIALIZE_SYSCALL` / `INVOKE_SYSCALL` macros.
 - **API hashing** via `ResolveAPIs.h` using **CRC-32B**. Both case-sensitive (`HashStringCrc32bA` / `HashStringCrc32bW` for API export names) and case-insensitive (`HashIStringCrc32bA` / `HashIStringCrc32bW` for module names) variants are provided. See [github.com/Maldev-Academy/ApiHashing](https://github.com/Maldev-Academy/ApiHashing).
-- **Hash regeneration** via the included `Crc32bHasher.py`:
+- **Hash regeneration** via the included [Crc32bHasher.py](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Crc32bHasher.py):
   ```
   python Crc32bHasher.py NtOpenProcess NtClose RtlFillMemory      # case-sensitive (APIs)
   python Crc32bHasher.py -i ntdll.dll kernel32.dll                # case-insensitive (modules)
   ```
   Output is ready to paste into `Common.h` as `CRC32B_*` defines.
 - **Unguard gadget** via `ReadThroughGadgets.h` to allow reading guarded memory for EAF-enabled targets.
-- **Granularity-based allocation** (`FindSuitableAddress` + `AllocateVirtualMemory`) that reserves a region at a predictable candidate base, then commits individual pages. 
+- **Granularity-based allocation** ([`FindSuitableAddress`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L429) + [`AllocateVirtualMemory`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L505)) that reserves a region at a predictable candidate base, then commits individual pages. 
 - **Hardened child spawning** via `NtCreateUserProcess` with `MITIGATION_POLICY_HARDENED` and `PS_ATTRIBUTE_HANDLE_LIST` for cross-process handle inheritance.
 
 <br>
@@ -250,4 +264,3 @@ Tested successfully against `sihost.exe` on Windows 11 24H2.
 - **Waiting Thread Hijacking** - https://research.checkpoint.com/2025/waiting-thread-hijacking/
 - **ApiHashing** - https://github.com/Maldev-Academy/ApiHashing
 - **AlphabeticalPolyShellGen** - https://github.com/Maldev-Academy/AlphabeticalPolyShellGen
-
