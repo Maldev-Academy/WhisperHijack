@@ -59,7 +59,7 @@ Launches with no arguments. Spawns the Writer child via `NtCreateUserProcess` wi
 
 3. Composes a wrapped payload: `[WTH stub (0x45 bytes)][main shellcode][8-byte hijack pointer at tail]`.
 
-4. Allocates a granularity-sized region in the target as `PAGE_READWRITE` (via [`AllocateVirtualMemory`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L505) -> [`FindSuitableAddress`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L429)).
+4. Allocates a granularity-sized region in the target as `PAGE_READWRITE` (via [`AllocateVirtualMemory`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L505) & [`FindSuitableAddress`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L429)).
 
 5. Plants the hijack pointer (= `pAllocatedAddress + WTH_STUB_CODE_OFFSET`) into the tail of the wrapped payload before delivery.
 
@@ -97,7 +97,7 @@ The target base is picked from a fixed list of candidate addresses (`0xDDDD0000`
 
 ### Allocation shape ([`AllocateVirtualMemory`](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#L505))
 
-For each granularity-sized region (64 KB on x64) the payload needs:
+For each granularity-sized region (64 KB on x64), the payload needs:
 
 1. `NtAllocateVirtualMemory(MEM_RESERVE, PAGE_NOACCESS)` reserves the full 64 KB as inaccessible.
 2. For each 4 KB page inside that region, `NtAllocateVirtualMemory(MEM_COMMIT, <requested protection>)` commits it individually.
@@ -131,8 +131,7 @@ Each chunk (up to `MAX_THREAD_NAME_LEN = 0xFFFE` bytes) is delivered as:
 
 ### Scratch slot - three options
 
-The in-target `GetThreadDescription` APC needs a known fixed address in the target to drop its heap pointer. Three options are provided; enable exactly one at the top of the file:
-
+The in-target `GetThreadDescription` APC needs a known fixed address in the target to drop its heap pointer. Three options are provided; enable exactly one at the top of the [Main.c](https://github.com/Maldev-Academy/WhisperHijack/blob/main/WhisperHijack/Main.c#17) file:
 | Option | Field                               | Pros                                   | Cons                             |
 |--------|-------------------------------------|----------------------------------------|----------------------------------|
 | 1      | `PEB.SpareUlongs`                   | Never used by Windows                  | Same slot as hasherezade's PoC   |
