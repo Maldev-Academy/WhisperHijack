@@ -6,7 +6,7 @@
 
 // From "HashValues.h"
 #ifndef CRC32B_NTDLLDLL
-#define CRC32B_NTDLLDLL  0xF1BC32A4886F52DD
+#define CRC32B_NTDLLDLL  0x84C05E40          
 #endif // !CRC32B_NTDLLDLL
 
 
