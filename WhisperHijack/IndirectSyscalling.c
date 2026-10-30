@@ -4,7 +4,7 @@
 
 #include "IndirectSyscalling.h"
 
-// From "HashValues.h"
+// From "Common.h"
 #ifndef CRC32B_NTDLLDLL
 #define CRC32B_NTDLLDLL  0x84C05E40          
 #endif // !CRC32B_NTDLLDLL
